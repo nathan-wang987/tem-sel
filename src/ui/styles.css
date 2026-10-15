@@ -1,0 +1,712 @@
+/*
+ * 界面层样式 · 像素风 UI
+ * 原则：直角、粗边框、内阴影高光、不透明色块，配合 Canvas 的像素质感。
+ */
+
+:root {
+  --ink: #e8ecff;
+  --ink-dim: #9aa4c4;
+  --panel: rgba(16, 18, 32, 0.88);
+  --panel-line: #454f7a;
+  --panel-dark: #0a0c16;
+  --accent: #7cc9ff;
+  --gold: #ffd15c;
+  --danger: #ff6b7f;
+  --good: #7cf09a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #05060c;
+  color: var(--ink);
+  font-family: "Consolas", "Courier New", "Microsoft YaHei", ui-monospace, monospace;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background:
+    radial-gradient(circle at 50% 0%, #1a1f3a 0%, #05060c 70%);
+}
+
+.stage {
+  position: relative;
+  width: min(100%, calc((100vh - 70px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  background: #05060c;
+  border: 3px solid var(--panel-line);
+  box-shadow: 0 0 0 3px #05060c, 0 12px 40px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+}
+
+.game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #05060c;
+}
+
+.footer {
+  display: flex;
+  gap: 16px;
+  font-size: 10px;
+  color: var(--ink-dim);
+  letter-spacing: 0.5px;
+}
+
+.dim {
+  color: var(--ink-dim);
+}
+
+/* ───────────── 顶部状态栏 ───────────── */
+
+.hud {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.panel {
+  background: var(--panel);
+  border: 2px solid var(--panel-line);
+  box-shadow: inset 0 0 0 2px var(--panel-dark);
+  padding: 6px 8px;
+}
+
+.panel-left {
+  width: 214px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.panel-center {
+  flex: 0 0 auto;
+  text-align: center;
+  padding: 6px 14px;
+}
+
+.panel-right {
+  margin-left: auto;
+  width: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.row-between {
+  justify-content: space-between;
+}
+
+.small {
+  font-size: 10px;
+}
+
+.badge {
+  background: var(--accent);
+  color: #05121c;
+  font-weight: 700;
+  padding: 1px 6px;
+  border: 2px solid #0a1a26;
+}
+
+.stat {
+  color: var(--gold);
+}
+
+.bar {
+  position: relative;
+  height: 16px;
+  background: #14162a;
+  border: 2px solid #07080f;
+  overflow: hidden;
+}
+
+.bar-xp {
+  height: 13px;
+}
+
+.bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #6ff08f 0%, #2fae5c 100%);
+  transition: width 0.14s linear;
+}
+
+.bar-fill-danger {
+  background: linear-gradient(180deg, #ff8b8b 0%, #d02c3c 100%);
+}
+
+.bar-fill-xp {
+  background: linear-gradient(180deg, #9fe0ff 0%, #3a7bd5 100%);
+}
+
+.bar-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #f2f6ff;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.wave-title {
+  font-size: 15px;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+
+.wave-sub {
+  font-size: 10px;
+  color: var(--ink-dim);
+}
+
+/* ───────────── 右上角按钮 ───────────── */
+
+.topbar {
+  position: absolute;
+  top: 76px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  pointer-events: auto;
+}
+
+.icon-btn {
+  width: 30px;
+  height: 26px;
+  background: var(--panel);
+  color: var(--ink);
+  border: 2px solid var(--panel-line);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.icon-btn:hover {
+  background: #232a4d;
+  border-color: var(--accent);
+}
+
+/* ───────────── 技能栏 ───────────── */
+
+.skillbar {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.skill-slot {
+  position: relative;
+  width: 64px;
+  height: 74px;
+  background: var(--panel);
+  border: 2px solid var(--panel-line);
+  box-shadow: inset 0 0 0 2px var(--panel-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.skill-slot.is-cooling {
+  border-color: #5a6390;
+}
+
+.skill-slot.is-unusable {
+  opacity: 0.6;
+}
+
+.skill-index {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font-size: 9px;
+  color: var(--ink-dim);
+}
+
+.skill-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+}
+
+.skill-key {
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  font-size: 10px;
+  color: var(--gold);
+}
+
+.skill-name {
+  font-size: 10px;
+  color: var(--ink);
+}
+
+.skill-cooldown {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skill-cooldown-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(6, 8, 16, 0.78);
+}
+
+.skill-cooldown-text {
+  position: relative;
+  font-size: 15px;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;
+}
+
+.skill-full {
+  position: absolute;
+  bottom: 1px;
+  font-size: 9px;
+  color: var(--good);
+}
+
+/* ───────────── 遮罩与弹窗 ───────────── */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.overlay-dim {
+  background: rgba(4, 5, 12, 0.72);
+}
+
+.overlay-start {
+  background: rgba(4, 5, 12, 0.82);
+}
+
+.overlay-countdown {
+  background: rgba(4, 6, 14, 0.42);
+  pointer-events: none;
+}
+
+.overlay-danger {
+  background: rgba(38, 6, 12, 0.72);
+}
+
+.modal,
+.start-card {
+  background: rgba(13, 16, 30, 0.96);
+  border: 3px solid var(--panel-line);
+  box-shadow: inset 0 0 0 3px var(--panel-dark), 0 14px 40px rgba(0, 0, 0, 0.6);
+  padding: 16px 20px;
+  max-width: 640px;
+  text-align: center;
+}
+
+.modal-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+
+.modal-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-dim);
+  margin-top: 4px;
+}
+
+.modal-hint {
+  font-size: 10px;
+  color: var(--ink-dim);
+  margin: 8px 0 0;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.btn {
+  background: #202644;
+  color: var(--ink);
+  border: 2px solid var(--panel-line);
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #2c3560;
+  border-color: var(--accent);
+}
+
+.btn-primary {
+  background: #1d4b6e;
+  border-color: var(--accent);
+  color: #eaf7ff;
+}
+
+.btn-primary:hover {
+  background: #245f8c;
+}
+
+.btn-danger:hover {
+  border-color: var(--danger);
+  color: #ffd9de;
+}
+
+/* 主菜单 */
+
+.start-card {
+  max-width: 560px;
+}
+
+.game-title {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: 4px;
+  color: #ffffff;
+  text-shadow: 3px 3px 0 #1b3a63, 0 0 18px rgba(124, 201, 255, 0.5);
+}
+
+.game-title-en {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--accent);
+  margin-top: 4px;
+}
+
+.game-sub {
+  margin: 8px 0 14px;
+  font-size: 11px;
+  color: var(--ink-dim);
+}
+
+.start-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.start-actions .btn {
+  min-width: 300px;
+}
+
+.start-stats {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  font-size: 10px;
+  color: var(--ink-dim);
+  margin-bottom: 12px;
+}
+
+.controls {
+  border-top: 2px solid #202644;
+  padding-top: 10px;
+  text-align: left;
+}
+
+.controls-title {
+  font-size: 11px;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.controls ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 14px;
+}
+
+.controls li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 10px;
+  color: var(--ink-dim);
+}
+
+kbd {
+  background: #131730;
+  border: 1px solid var(--panel-line);
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 10px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* 升级三选一 */
+
+.cards {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.card {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 130px;
+  min-height: 132px;
+  background: #141830;
+  border: 3px solid var(--panel-line);
+  padding: 12px 10px;
+  color: var(--ink);
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transition: transform 0.08s ease-out, background 0.12s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  background: #1c2242;
+}
+
+.card-epic {
+  background: #2a2211;
+}
+
+.card-epic:hover {
+  background: #3a2f16;
+}
+
+.card-index {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  font-size: 10px;
+  color: var(--ink-dim);
+}
+
+.card-tier {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.card-name {
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.card-en {
+  font-size: 9px;
+  color: var(--ink-dim);
+  letter-spacing: 1px;
+}
+
+.card-desc {
+  font-size: 11px;
+  color: #cfd8f5;
+  line-height: 1.5;
+}
+
+.card-stack {
+  font-size: 9px;
+  color: var(--gold);
+}
+
+/* 波次结算 */
+
+.waveclear {
+  position: absolute;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  border: 2px solid var(--panel-line);
+  box-shadow: inset 0 0 0 2px var(--panel-dark);
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 260px;
+}
+
+.waveclear-title {
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.waveclear-grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 3px 18px;
+  font-size: 11px;
+  justify-content: center;
+  text-align: left;
+}
+
+.waveclear-grid span:nth-child(odd) {
+  color: var(--ink-dim);
+}
+
+.waveclear-next {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.waveclear-hint {
+  font-size: 10px;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+
+/* 倒计时 / 提示 */
+
+.countdown {
+  text-align: center;
+  animation: pop 0.9s ease-out infinite;
+}
+
+.countdown-number {
+  font-size: 74px;
+  color: #ffffff;
+  text-shadow: 4px 4px 0 #0d2a45, 0 0 26px rgba(124, 201, 255, 0.7);
+}
+
+.countdown-text {
+  font-size: 13px;
+  letter-spacing: 6px;
+  color: var(--accent);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.toast {
+  position: absolute;
+  top: 74px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 12, 24, 0.92);
+  border: 2px solid var(--panel-line);
+  padding: 5px 14px;
+  font-size: 12px;
+  animation: toastIn 0.18s ease-out;
+  pointer-events: none;
+}
+
+.toast-good {
+  border-color: var(--good);
+  color: var(--good);
+}
+
+.toast-warn {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.warn-text {
+  font-size: 10px;
+  color: var(--danger);
+  margin: 10px 0 0;
+}
+
+@media (max-width: 720px) {
+  html,
+  body {
+    font-size: 11px;
+  }
+
+  .controls ul {
+    grid-template-columns: 1fr;
+  }
+
+  .cards {
+    flex-direction: column;
+  }
+
+  .panel-left,
+  .panel-right {
+    width: 160px;
+  }
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0f1a" />
+    <title>像素守卫 · Pixel Warden</title>
+    <link rel="stylesheet" href="./dist/game.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>这个游戏需要启用 JavaScript 才能运行。</noscript>
+    <script src="./dist/game.js" defer></script>
+    <script>
+      // 如果 dist/ 没有被构建出来，给出明确提示（双击 index.html 直接玩也依赖 dist/game.js）。
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          if (!window.__PIXEL_WARDEN_BOOTED__) {
+            var el = document.getElementById('root');
+            if (el && !el.hasChildNodes()) {
+              el.innerHTML =
+                '<div style="font-family:Consolas,monospace;color:#e8e8ff;padding:24px;line-height:1.7">' +
+                '<h1 style="font-size:18px">找不到 dist/game.js</h1>' +
+                '<p>请先在项目目录执行 <code>npm install &amp;&amp; npm run build</code>，生成 dist/game.js 与 dist/game.css 后刷新页面。</p>' +
+                '<p>也可以直接运行 <code>npm run serve</code> 打开 http://localhost:5173/ 游玩。</p>' +
+                '</div>';
+            }
+          }
+        }, 2500);
+      });
+    </script>
+  </body>
+</html>

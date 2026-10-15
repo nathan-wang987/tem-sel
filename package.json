@@ -1,0 +1,26 @@
+{
+  "name": "pixel-warden",
+  "version": "1.0.0",
+  "private": true,
+  "description": "像素守卫 Pixel Warden - 横版打怪升级网页小游戏 (TypeScript + React + Canvas 像素 3D 渲染)",
+  "license": "MIT",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "watch": "node tools/build.mjs --watch",
+    "serve": "node tools/serve.mjs",
+    "dev": "node tools/build.mjs --watch --serve",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node tools/test.mjs"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0"
+  }
+}
